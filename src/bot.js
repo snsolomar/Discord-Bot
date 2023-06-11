@@ -100,7 +100,7 @@ client.on('messageCreate', async(message) => {
 
         message.reply(result.data.choices[0].message.content);
 
-    } else if (message.content === 'hello') {
+    } else if (message.content.toLowerCase() === 'hello' || message.content.toLowerCase() === 'hi') {
         message.reply("Hey!");
     }
 });
