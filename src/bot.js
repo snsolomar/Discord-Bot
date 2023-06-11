@@ -17,6 +17,9 @@ const loginToken = process.env.BOT_TOKEN;
 const openaiApiKey = process.env.OPEN_AI_TOKEN;
 const openaiApiUrl = 'https://api.openai.com/v1/engines/davinci-codex/completions';
 
+// Reference these docs for how to use openAI
+// https://www.codingthesmartway.com/how-to-use-openai-api-with-axios/
+
 // Instantiate the OpenAI client
 async function getGpt3Response(prompt) {
     const response = await axios.post(
