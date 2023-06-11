@@ -2,11 +2,18 @@ require('dotenv').config();
 
 const discord = require('discord.js')
 const axios = require('axios');
-const tokenPricePrefix = '$';
+const tokenPrice = '$';
 
+// Ask Cassandra
+const askCassandra = "Cassandra";
+
+// Configure Discord API
 const loginToken = process.env.BOT_TOKEN;
 
-// console.log(loginToken);
+// Configure OpenAI API
+const openaiApiKey = process.env.OPEN_AI_TOKEN;
+const openaiApiUrl = 'https://api.openai.com/v1/engines/davinci-codex/completions';
+
 
 // Import the bot
 const { Client, IntentsBitField} = discord;
@@ -32,11 +39,11 @@ client.on('messageCreate', async(message) => {
     // console.log(message.content)
     
     
-    if (!message.content.startsWith(tokenPricePrefix) || message.author.bot) {
+    if (!message.content.startsWith(tokenPrice) || message.author.bot) {
         return;
     }
 
-    const args = message.content.slice(tokenPricePrefix.length).trim().split(' ');
+    const args = message.content.slice(tokenPrice.length).trim().split(' ');
     const command = args.shift().toLocaleLowerCase();
 
     if (command === 'token_price') {
@@ -56,7 +63,7 @@ client.on('messageCreate', async(message) => {
         message.reply("Hey!");
     }
 
-    if (!message.content.startsWith(tokenPricePrefix) || message.author.bot) {
+    if (!message.content.startsWith(tokenPrice) || message.author.bot) {
         return;
     }
 });
