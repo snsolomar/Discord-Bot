@@ -71,7 +71,8 @@ client.on('messageCreate', async(message) => {
     const content = message.content;
 
     if (content.startsWith(askCassandra)) {
-        const prompt = content.slice(askCassandra.length).trim(); // Removes "Cassandra" from the message
+        // Removes "Cassandra" from the message
+        const prompt = content.slice(askCassandra.length).trim(); 
         try {
             const gptResponse = await getGpt3Response(prompt);
             message.channel.send(gptResponse);
@@ -85,7 +86,7 @@ client.on('messageCreate', async(message) => {
         const args = content.slice(tokenPrice.length).trim().split(' ');
         const command = args.shift().toLocaleLowerCase();
 
-        if (command === 'token_price') {
+        if (command === 'price') {
             const token = args[0];
 
             try {
