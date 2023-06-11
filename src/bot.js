@@ -1,7 +1,5 @@
 require('dotenv').config();
 const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
 
 const discord = require('discord.js')
 const axios = require('axios');
@@ -27,23 +25,6 @@ const openai = new OpenAIApi(config);
 
 // Initalize
 const app = express();
-
-app.use(bodyParser.json());
-app.use(cors());
-
-app.post("/chat", async (req, res) => {
-    const { prompt } = req.body;
-  
-    const completion = await openai.createCompletion({
-      model: "text-davinci-003",
-      max_tokens: 512,
-      temperature: 0,
-      prompt: prompt,
-    });
-    res.send(completion.data.choices[0].text);
-});
-
-
 
 
 // Import the bot
@@ -74,6 +55,24 @@ client.on('messageCreate', async(message) => {
     }
 
     const content = message.content;
+
+    let conversationLog = [{ role: 'system', content: "You are a friendly chatbot."}];
+
+    conversationLog.push({
+        role: 'user',
+        content: message.content,
+    });
+
+    await content.startsWith("Cassandra ");
+
+    const result = await openai.createChatCompletion({
+        model: 'gpt-3.5-turbo',
+        messages: conversationLog,
+    })
+
+    message.reply(result.data.choices[0].message);
+
+
 
     if (content.startsWith(tokenPrice)) {
         const args = content.slice(tokenPrice.length).trim().split(' ');
