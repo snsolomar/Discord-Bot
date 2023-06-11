@@ -2,6 +2,9 @@ require('dotenv').config();
 
 const discord = require('discord.js')
 const axios = require('axios');
+const { OpenAI } = require('openai');
+
+
 const tokenPrice = '$';
 
 // Ask Cassandra
@@ -13,6 +16,26 @@ const loginToken = process.env.BOT_TOKEN;
 // Configure OpenAI API
 const openaiApiKey = process.env.OPEN_AI_TOKEN;
 const openaiApiUrl = 'https://api.openai.com/v1/engines/davinci-codex/completions';
+
+// Instantiate the OpenAI client
+async function getGpt3Response(prompt) {
+    const response = await axios.post(
+        'https://api.openai.com/v1/engines/davinci-codex/completions',
+        {
+            prompt: prompt,
+            max_tokens: 60,
+        },
+        {
+            headers: {
+                'Authorization': "Bearer" + `${openaiApiKey}`,
+                'Content-Type': 'application/json',
+            },
+        }
+    );
+    return response.data.choices[0].text.trim();
+}
+
+
 
 
 // Import the bot
@@ -38,33 +61,38 @@ client.on('ready', (c) => {
 client.on('messageCreate', async(message) => {
     // console.log(message.content)
     
-    
-    if (!message.content.startsWith(tokenPrice) || message.author.bot) {
+    if (message.author.bot) {
         return;
     }
 
-    const args = message.content.slice(tokenPrice.length).trim().split(' ');
-    const command = args.shift().toLocaleLowerCase();
+    const content = message.content;
 
-    if (command === 'token_price') {
-        const token = args[0];
-
+    if (content.startsWith(askCassandra)) {
+        const prompt = content.slice(askCassandra.length).trim(); // Removes "Cassandra" from the message
         try {
-            const response = await axios.get(`https://api.coingecko.com/api/v3/simple/price?ids=${token}&vs_currencies=usd`);
-            const price = response.data[token].usd;
-
-            message.channel.send(`The current price of ${token} is $${price}`);
+            const gptResponse = await getGpt3Response(prompt);
+            message.channel.send(gptResponse);
         } catch (error) {
-            message.channel.send('Token not found');
+            console.error(error);
+            message.channel.send('Sorry, I was unable to generate a response.');
         }
-    }
+    } else if (content.startsWith(tokenPrice)) {
+        const args = content.slice(tokenPrice.length).trim().split(' ');
+        const command = args.shift().toLocaleLowerCase();
 
-    if (message.content === 'hello') {
+        if (command === 'token_price') {
+            const token = args[0];
+
+            try {
+                const response = await axios.get(`https://api.coingecko.com/api/v3/simple/price?ids=${token}&vs_currencies=usd`);
+                const price = response.data[token].usd;
+                message.channel.send(`The current price of ${token} is $${price}`);
+            } catch (error) {
+                message.channel.send('Token not found');
+            }
+        }
+    } else if (message.content === 'hello') {
         message.reply("Hey!");
-    }
-
-    if (!message.content.startsWith(tokenPrice) || message.author.bot) {
-        return;
     }
 });
 
