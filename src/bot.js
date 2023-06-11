@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const discord = require('discord.js')
 const axios = require('axios');
-const { OpenAI } = require('openai');
+const { Configuration, OpenAIApi } = require('openai');
 
 
 const tokenPrice = '$';
@@ -15,29 +15,10 @@ const loginToken = process.env.BOT_TOKEN;
 
 // Configure OpenAI API
 const openaiApiKey = process.env.OPEN_AI_TOKEN;
-const openaiApiUrl = 'https://api.openai.com/v1/engines/davinci-codex/completions';
-
-// Reference these docs for how to use openAI
-// https://www.codingthesmartway.com/how-to-use-openai-api-with-axios/
-
-// Instantiate the OpenAI client
-async function getGpt3Response(prompt) {
-    const response = await axios.post(
-        'https://api.openai.com/v1/engines/davinci-codex/completions',
-        {
-            prompt: prompt,
-            max_tokens: 60,
-        },
-        {
-            headers: {
-                'Authorization': "Bearer" + `${openaiApiKey}`,
-                'Content-Type': 'application/json',
-            },
-        }
-    );
-    return response.data.choices[0].text.trim();
-}
-
+const config = new Configuration({
+    apiKey: `${openaiApiKey}`
+})
+const openai = new OpenAIApi(config);
 
 
 
@@ -108,5 +89,4 @@ client.on('messageCreate', async(message) => {
 
 
 client.login(loginToken);
-
 
