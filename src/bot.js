@@ -69,18 +69,6 @@ client.on('messageCreate', async(message) => {
 
     const content = message.content;
 
-    if (content.startsWith(askCassandra)) {
-        // Removes "Cassandra" from the message
-        const prompt = content.slice(askCassandra.length).trim(); 
-        try {
-            const gptResponse = await getGpt3Response(prompt);
-            message.channel.send(gptResponse);
-        } catch (error) {
-            console.error(error);
-            message.channel.send('Sorry, I was unable to generate a response.');
-        }
-    } 
-    
     if (content.startsWith(tokenPrice)) {
         const args = content.slice(tokenPrice.length).trim().split(' ');
         const command = args.shift().toLocaleLowerCase();
@@ -116,6 +104,7 @@ client.on('messageCreate', async(message) => {
         message.reply("Hey!");
     }
 });
+
 
 
 client.login(loginToken);
