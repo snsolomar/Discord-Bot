@@ -1,9 +1,8 @@
 require('dotenv').config();
-const express = require("express");
 
 const discord = require('discord.js')
 const axios = require('axios');
-const { Configuration, OpenAIApi } = require('openai');
+const { OpenAI } = require('openai');
 
 
 const tokenPrice = '$';
@@ -16,15 +15,30 @@ const loginToken = process.env.BOT_TOKEN;
 
 // Configure OpenAI API
 const openaiApiKey = process.env.OPEN_AI_TOKEN;
+const openaiApiUrl = 'https://api.openai.com/v1/engines/davinci-codex/completions';
 
-const config = new Configuration({
-    apiKey: `${openaiApiKey}`
-})
+// Reference these docs for how to use openAI
+// https://www.codingthesmartway.com/how-to-use-openai-api-with-axios/
 
-const openai = new OpenAIApi(config);
+// Instantiate the OpenAI client
+async function getGpt3Response(prompt) {
+    const response = await axios.post(
+        'https://api.openai.com/v1/engines/davinci-codex/completions',
+        {
+            prompt: prompt,
+            max_tokens: 60,
+        },
+        {
+            headers: {
+                'Authorization': "Bearer" + `${openaiApiKey}`,
+                'Content-Type': 'application/json',
+            },
+        }
+    );
+    return response.data.choices[0].text.trim();
+}
 
-// Initalize
-const app = express();
+
 
 
 // Import the bot
@@ -56,24 +70,17 @@ client.on('messageCreate', async(message) => {
 
     const content = message.content;
 
-    let conversationLog = [{ role: 'system', content: "You are a friendly chatbot."}];
-
-    conversationLog.push({
-        role: 'user',
-        content: message.content,
-    });
-
-    await content.startsWith("Cassandra ");
-
-    const result = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
-        messages: conversationLog,
-    })
-
-    message.reply(result.data.choices[0].message);
-
-
-
+    if (content.startsWith(askCassandra)) {
+        const prompt = content.slice(askCassandra.length).trim(); // Removes "Cassandra" from the message
+        try {
+            const gptResponse = await getGpt3Response(prompt);
+            message.channel.send(gptResponse);
+        } catch (error) {
+            console.error(error);
+            message.channel.send('Sorry, I was unable to generate a response.');
+        }
+    } 
+    
     if (content.startsWith(tokenPrice)) {
         const args = content.slice(tokenPrice.length).trim().split(' ');
         const command = args.shift().toLocaleLowerCase();
