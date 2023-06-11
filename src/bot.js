@@ -48,37 +48,18 @@ client.on('ready', (c) => {
 
 // This event listener can only work the the intent is provided in the client
 client.on('messageCreate', async(message) => {
-    // console.log(message.content)
-    
+
     if (message.author.bot) {
         return;
     }
 
     const content = message.content;
 
-    let conversationLog = [{ role: 'system', content: "You are a friendly chatbot."}];
-
-    conversationLog.push({
-        role: 'user',
-        content: message.content,
-    });
-
-    await content.startsWith("Cassandra ");
-
-    const result = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
-        messages: conversationLog,
-    })
-
-    message.reply(result.data.choices[0].message);
-
-
-
     if (content.startsWith(tokenPrice)) {
         const args = content.slice(tokenPrice.length).trim().split(' ');
         const command = args.shift().toLocaleLowerCase();
 
-        if (command === 'token_price') {
+        if (command === 'price') {
             const token = args[0];
 
             try {
@@ -89,10 +70,27 @@ client.on('messageCreate', async(message) => {
                 message.channel.send('Token not found');
             }
         }
+    } else if (content.startsWith("Cassandra ")) {
+        
+        let conversationLog = [{ role: 'system', content: "You are a friendly chatbot."}];
+
+        conversationLog.push({
+            role: 'user',
+            content: message.content,
+        });
+
+        const result = await openai.createChatCompletion({
+            model: 'gpt-3.5-turbo',
+            messages: conversationLog,
+        })
+
+        message.reply(result.data.choices[0].message.content);
+
     } else if (message.content === 'hello') {
         message.reply("Hey!");
     }
 });
+
 
 client.login(loginToken);
 
