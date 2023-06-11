@@ -18,7 +18,6 @@ const loginToken = process.env.BOT_TOKEN;
 
 // Configure OpenAI API
 const openaiApiKey = process.env.OPEN_AI_TOKEN;
-const openaiApiUrl = 'https://api.openai.com/v1/engines/davinci-codex/completions';
 
 const config = new Configuration({
     apiKey: `${openaiApiKey}`
@@ -26,10 +25,23 @@ const config = new Configuration({
 
 const openai = new OpenAIApi(config);
 
+// Initalize
 const app = express();
 
 app.use(bodyParser.json());
 app.use(cors());
+
+app.post("/chat", async (req, res) => {
+    const { prompt } = req.body;
+  
+    const completion = await openai.createCompletion({
+      model: "text-davinci-003",
+      max_tokens: 512,
+      temperature: 0,
+      prompt: prompt,
+    });
+    res.send(completion.data.choices[0].text);
+});
 
 
 
