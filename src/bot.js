@@ -1,4 +1,6 @@
 require('dotenv').config();
+const newLocal = './handlers/eventHandler';
+const eventHandler = require(newLocal);
 
 const discord = require('discord.js')
 const axios = require('axios');
@@ -37,6 +39,7 @@ const client = new Client({
     ],
 });
 
+eventHandler(client);
 // .on is a method that has access to a list of events, works like an event handler
 client.on('ready', (c) => {
     console.log(`${c.user.tag} is online!`);
