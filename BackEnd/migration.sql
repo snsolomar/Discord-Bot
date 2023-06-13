@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS member;
+
+CREATE TABLE member (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255),
+    current_exp BIGINT DEFAULT 0,
+    level INTEGER DEFAULT 1,
+    join_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

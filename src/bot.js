@@ -69,9 +69,12 @@ client.on('messageCreate', async(message) => {
         
         let conversationLog = [{ role: 'system', content: "You are a friendly chatbot."}];
 
+        // Remove "Cassandra " from the start of the content string before sending to the GPT model
+        const gptContent = content.replace("Cassandra ", "");
+
         conversationLog.push({
             role: 'user',
-            content: message.content,
+            content: gptContent,
         });
 
         const result = await openai.createChatCompletion({
