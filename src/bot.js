@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const discord = require('discord.js')
 const axios = require('axios');
+const mongoose = require('mongoose');
 const { Configuration, OpenAIApi } = require('openai');
 
 
