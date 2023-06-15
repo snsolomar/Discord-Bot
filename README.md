@@ -1,10 +1,10 @@
 # Discord-Bot
 
-Features to implement:
+Features implemented:
 
 - GPT reply
 - Token prices
-- Haikus
+- File Restructure
 
 # Disclaimer: This is an AI trained with data and not connected to the internet, it may not be accurate.
 
