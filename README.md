@@ -6,6 +6,10 @@ Features implemented:
 - Token prices
 - File Restructure
 
+
+Features to implement:
+- Level Up Database
+
 # Disclaimer: This is an AI trained with data and not connected to the internet, it may not be accurate.
 
 # Usage policy or what you can do with it
