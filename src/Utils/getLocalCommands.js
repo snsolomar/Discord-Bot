@@ -2,7 +2,7 @@ const path = require('path');
 const getAllFiles = require('./getAllFiles');
 
 //includes specific commands based on your choice
-module.exports = (exceptions) => {
+module.exports = (exceptions = []) => {
     let localCommands = [];
 
     const commandCategories = getAllFiles(
@@ -15,6 +15,11 @@ module.exports = (exceptions) => {
 
         for (const commandFile of commandFiles) {
             const commandObject = require(commandFile);
+
+            if (exceptions.includes(commandObject.name)){
+                continue;
+            }
+            
             localCommands.push(commandObject);
         }
     }
