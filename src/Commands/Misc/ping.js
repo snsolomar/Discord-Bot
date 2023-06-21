@@ -3,7 +3,8 @@ module.exports = {
     description: "pong",
     // devOnly: Boolean,
     // testOnly: Boolean,
-    // options: 
+    // options: Object[],
+    // deleted: Boolean,
 
     callback: (client, interaction) => {
         interaction.reply(`Pong! ${client.ws.ping}ms`)
