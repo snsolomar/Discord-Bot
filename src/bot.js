@@ -43,7 +43,7 @@ eventHandler(client);
 // client.on('ready', (c) => {
 //     console.log(`${c.user.tag} is online!`);
 // });
-
+//
 // This event listener can only work the the intent is provided in the client
 client.on('messageCreate', async(message) => {
 
